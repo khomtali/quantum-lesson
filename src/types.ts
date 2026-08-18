@@ -7,7 +7,16 @@ export type VisualType =
   | "home-vs-lab"
   | "quantum-framework"
   | "core-ideas"
-  | "everyday-quantum";
+  | "everyday-quantum"
+  | "interpretation-boundary"
+  | "copenhagen"
+  | "many-worlds"
+  | "bohmian"
+  | "modern-options"
+  | "big-questions"
+  | "buddhist-parallels"
+  | "no-lies"
+  | "lesson-two-finale";
 
 export interface HomeDemo {
   title: string;

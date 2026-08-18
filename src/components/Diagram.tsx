@@ -23,6 +23,15 @@ export function Diagram({ type }: DiagramProps) {
       {type === "quantum-framework" ? <QuantumFrameworkDiagram /> : null}
       {type === "core-ideas" ? <CoreIdeasDiagram /> : null}
       {type === "everyday-quantum" ? <EverydayQuantumDiagram /> : null}
+      {type === "interpretation-boundary" ? <InterpretationBoundaryDiagram /> : null}
+      {type === "copenhagen" ? <CopenhagenDiagram /> : null}
+      {type === "many-worlds" ? <ManyWorldsDiagram /> : null}
+      {type === "bohmian" ? <BohmianDiagram /> : null}
+      {type === "modern-options" ? <ModernOptionsDiagram /> : null}
+      {type === "big-questions" ? <BigQuestionsDiagram /> : null}
+      {type === "buddhist-parallels" ? <BuddhistParallelsDiagram /> : null}
+      {type === "no-lies" ? <NoLiesDiagram /> : null}
+      {type === "lesson-two-finale" ? <LessonTwoFinaleDiagram /> : null}
     </section>
   );
 }
@@ -459,6 +468,246 @@ function EverydayQuantumDiagram() {
         </text>
         <text x="124" y="306" className="svg-note">
           квантмех важен не потому, что странный. а потому, что без него не собирается быт
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function InterpretationBoundaryDiagram() {
+  return (
+    <DiagramShell
+      title="одна математика, несколько чтений"
+      subtitle="данные общие. спор идёт о том, что считать реальностью за этими данными."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <rect x="58" y="126" width="126" height="84" rx="18" className="svg-panel" />
+        <rect x="218" y="126" width="126" height="84" rx="18" className="svg-panel" />
+        <rect x="378" y="86" width="118" height="54" rx="16" className="svg-panel" />
+        <rect x="378" y="154" width="118" height="54" rx="16" className="svg-panel" />
+        <rect x="378" y="222" width="118" height="54" rx="16" className="svg-panel" />
+        <path d="M184 168 H218" className="svg-arrow-line" />
+        <path d="M344 168 H378 M344 168 L378 113 M344 168 L378 249" className="svg-arrow-line" />
+        <text x="82" y="160" className="svg-label">эксперимент</text>
+        <text x="80" y="184" className="svg-small">факты и результаты</text>
+        <text x="242" y="160" className="svg-label">теория</text>
+        <text x="232" y="184" className="svg-small">формулы работают</text>
+        <text x="402" y="118" className="svg-small">копенгаген</text>
+        <text x="398" y="186" className="svg-small">многомировая</text>
+        <text x="390" y="254" className="svg-small">бомианская</text>
+        <text x="130" y="320" className="svg-note">
+          интерпретации спорят о смысле, а не о том, сработал ли эксперимент
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function CopenhagenDiagram() {
+  return (
+    <DiagramShell
+      title="копенгаген: не дорисовывай лишнее"
+      subtitle="теория нужна, чтобы считать результаты измерения, а не обязательно рисовать скрытый фильм между ними."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <rect x="62" y="88" width="174" height="186" rx="20" className="svg-panel" />
+        <rect x="324" y="88" width="174" height="186" rx="20" className="svg-panel" />
+        <text x="88" y="126" className="svg-label">что берём всерьёз</text>
+        <text x="88" y="156" className="svg-small">состояние системы</text>
+        <text x="88" y="180" className="svg-small">правила вероятностей</text>
+        <text x="88" y="204" className="svg-small">измерение и результат</text>
+        <text x="350" y="126" className="svg-label">что не обещаем</text>
+        <text x="350" y="156" className="svg-small">уютную классическую</text>
+        <text x="350" y="180" className="svg-small">историю “что было”</text>
+        <text x="350" y="204" className="svg-small">между измерениями</text>
+        <text x="120" y="320" className="svg-note">
+          выигрыш: дисциплина. цена: меньше онтологического комфорта
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function ManyWorldsDiagram() {
+  return (
+    <DiagramShell
+      title="многомировая: коллапса нет, ветвление есть"
+      subtitle="волновая функция развивается дальше, а возможные исходы расходятся по разным ветвям."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <path d="M104 182 H238" className="svg-arrow-line" />
+        <path d="M238 182 C286 182, 314 154, 372 112" className="svg-arrow-line" />
+        <path d="M238 182 C286 182, 314 182, 372 182" className="svg-arrow-line" />
+        <path d="M238 182 C286 182, 314 210, 372 252" className="svg-arrow-line" />
+        <circle cx="92" cy="182" r="12" className="svg-point-aqua" />
+        <circle cx="238" cy="182" r="12" className="svg-point-gold" />
+        <circle cx="384" cy="112" r="10" className="svg-point-aqua" />
+        <circle cx="384" cy="182" r="10" className="svg-point-aqua" />
+        <circle cx="384" cy="252" r="10" className="svg-point-aqua" />
+        <text x="72" y="154" className="svg-small">до измерения</text>
+        <text x="216" y="154" className="svg-small">разветвление</text>
+        <text x="400" y="116" className="svg-small">исход 1</text>
+        <text x="400" y="186" className="svg-small">исход 2</text>
+        <text x="400" y="256" className="svg-small">исход 3</text>
+        <text x="116" y="320" className="svg-note">
+          выигрыш: не нужен отдельный коллапс. цена: онтология становится очень широкой
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function BohmianDiagram() {
+  return (
+    <DiagramShell
+      title="де бройль — бом: частица + направляющая волна"
+      subtitle="траектория возвращается, но картинка мира перестаёт быть локально невинной."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <path d="M70 210 C140 164, 202 148, 272 180 C324 204, 382 202, 462 134" className="svg-path-hard" />
+        <path d="M60 142 C150 102, 236 100, 332 132 C392 152, 438 150, 492 122" className="svg-path-soft" />
+        <path d="M60 258 C146 218, 236 216, 332 248 C392 268, 440 266, 494 236" className="svg-path-soft" />
+        <circle cx="70" cy="210" r="10" className="svg-point-gold" />
+        <circle cx="462" cy="134" r="10" className="svg-point-gold" />
+        <text x="94" y="128" className="svg-small">волна направляет</text>
+        <text x="78" y="236" className="svg-small">частица идёт по траектории</text>
+        <text x="118" y="320" className="svg-note">
+          выигрыш: траектория есть. цена: локальность мира уже не выглядит простой
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function ModernOptionsDiagram() {
+  return (
+    <DiagramShell
+      title="другие версии двигают боль в разные места"
+      subtitle="коллапс, отношения, агент — разные способы не свалиться в старую картину мира."
+    >
+      <div className="diagram-compare-grid">
+        <div className="diagram-compare-card">
+          <p className="diagram-compare-kicker">объективный коллапс</p>
+          <h4>схлопывание реально в природе</h4>
+          <ul>
+            <li>не только в описании результата</li>
+            <li>коллапс получает физический статус</li>
+          </ul>
+        </div>
+        <div className="diagram-compare-card">
+          <p className="diagram-compare-kicker">реляционная</p>
+          <h4>свойства зависят от отношения</h4>
+          <ul>
+            <li>контекст взаимодействия важен</li>
+            <li>нет абсолютно одинокого описания</li>
+          </ul>
+        </div>
+        <div className="diagram-compare-card diagram-compare-card-highlight">
+          <p className="diagram-compare-kicker">qbism</p>
+          <h4>вероятности как ожидания агента</h4>
+          <ul>
+            <li>теория помогает действовать</li>
+            <li>не обещает голую “карту мира”</li>
+          </ul>
+        </div>
+      </div>
+    </DiagramShell>
+  );
+}
+
+function BigQuestionsDiagram() {
+  return (
+    <DiagramShell
+      title="ключевые вопросы второго урока"
+      subtitle="не потому что физики любят туман, а потому что простого ответа без цены не выходит."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <circle cx="280" cy="178" r="58" className="svg-core-node" />
+        <text x="232" y="182" className="svg-core-label">
+          измерение
+        </text>
+        <path d="M280 120 L280 64 M338 178 H492 M280 236 L280 292 M222 178 H68" className="svg-arrow-line" />
+        <text x="232" y="50" className="svg-small">вероятность</text>
+        <text x="420" y="170" className="svg-small">реальность</text>
+        <text x="246" y="320" className="svg-small">локальность</text>
+        <text x="46" y="170" className="svg-small">свойства до наблюдения</text>
+        <text x="114" y="320" className="svg-note">
+          каждая интерпретация даёт свой пакет ответов на эти узлы
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function BuddhistParallelsDiagram() {
+  return (
+    <DiagramShell
+      title="параллели — это рифмы, а не доказательства"
+      subtitle="сравнивать можно пределы интуиции, роль отношений и вопрос независимой сущности."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <rect x="60" y="84" width="182" height="188" rx="20" className="svg-panel" />
+        <rect x="318" y="84" width="182" height="188" rx="20" className="svg-panel" />
+        <text x="126" y="118" className="svg-label">буддизм</text>
+        <text x="86" y="154" className="svg-small">нет твёрдой отдельной сущности</text>
+        <text x="86" y="182" className="svg-small">отношения и взаимозависимость</text>
+        <text x="86" y="210" className="svg-small">обыденная интуиция ненадёжна</text>
+        <text x="380" y="118" className="svg-label">квантмех</text>
+        <text x="344" y="154" className="svg-small">свойства не всегда даны классически</text>
+        <text x="344" y="182" className="svg-small">контекст измерения важен</text>
+        <text x="344" y="210" className="svg-small">старый реализм трещит</text>
+        <text x="120" y="320" className="svg-note">
+          сходство есть на уровне удара по наивной картине, не на уровне формул
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function NoLiesDiagram() {
+  return (
+    <DiagramShell
+      title="красивую ложь лучше резать сразу"
+      subtitle="иначе на месте физики быстро появляется сувенирный космос."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <rect x="54" y="86" width="452" height="194" rx="22" className="svg-panel" />
+        <text x="88" y="126" className="svg-label">не надо говорить:</text>
+        <text x="88" y="160" className="svg-small">“квантмех доказал буддизм”</text>
+        <text x="88" y="188" className="svg-small">“сознание силой мысли создаёт реальность”</text>
+        <text x="88" y="216" className="svg-small">“аналогия = научный вывод”</text>
+        <path d="M404 150 L470 216 M470 150 L404 216" className="svg-cross" />
+        <text x="108" y="320" className="svg-note">
+          если после объяснения осталась только магия, а физика исчезла, объяснение было плохим
+        </text>
+      </svg>
+    </DiagramShell>
+  );
+}
+
+function LessonTwoFinaleDiagram() {
+  return (
+    <DiagramShell
+      title="общий нерв второго урока"
+      subtitle="и квантмех, и буддизм могут выбивать подпорки из наивной уверенности, но они не становятся одним и тем же."
+    >
+      <svg className="diagram-svg" viewBox="0 0 560 360">
+        <rect x="74" y="122" width="144" height="92" rx="18" className="svg-panel" />
+        <rect x="342" y="122" width="144" height="92" rx="18" className="svg-panel" />
+        <circle cx="280" cy="168" r="44" className="svg-core-node" />
+        <path d="M218 168 H236 M324 168 H342" className="svg-arrow-line" />
+        <text x="110" y="160" className="svg-label">буддизм</text>
+        <text x="98" y="184" className="svg-small">традиция практики и мысли</text>
+        <text x="366" y="160" className="svg-label">квантмех</text>
+        <text x="354" y="184" className="svg-small">физическая теория</text>
+        <text x="248" y="162" className="svg-core-label">
+          удар
+        </text>
+        <text x="226" y="186" className="svg-core-small">
+          по наивной уверенности
+        </text>
+        <text x="116" y="320" className="svg-note">
+          рифма есть. тождество — нет. и именно это делает разговор честным
         </text>
       </svg>
     </DiagramShell>

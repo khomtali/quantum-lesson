@@ -601,6 +601,13 @@ h3 {
   stroke-width: 3;
 }
 
+.svg-cross {
+  fill: none;
+  stroke: rgba(255, 140, 168, 0.92);
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
 .svg-band {
   fill: rgba(255, 200, 108, 0.92);
 }
