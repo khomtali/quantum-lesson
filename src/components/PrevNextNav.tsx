@@ -25,20 +25,20 @@ export function PrevNextNav({
         onClick={onPrevious}
         type="button"
       >
-        Назад
+        назад
       </button>
 
       {hasNext ? (
         <button className="nav-button" onClick={onNext} type="button">
-          Дальше
+          дальше
         </button>
       ) : nextLessonHref ? (
         <Link className="nav-button nav-button-link" to={nextLessonHref}>
-          {nextLessonTitle ?? "К следующему уроку"}
+          {nextLessonTitle ?? "к следующему уроку"}
         </Link>
       ) : (
         <button className="nav-button" disabled type="button">
-          Маршрут завершён
+          на этом пока всё
         </button>
       )}
     </section>

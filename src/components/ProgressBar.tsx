@@ -7,9 +7,9 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
   const progress = `${(current / total) * 100}%`;
 
   return (
-    <section className="progress-panel" aria-label="Прогресс по уроку">
+    <section className="progress-panel" aria-label="прогресс по уроку">
       <div className="progress-header">
-        <span>Прогресс</span>
+        <span>где мы сейчас</span>
         <span>
           {current} / {total}
         </span>

@@ -7,16 +7,16 @@ interface HomeDemoCardProps {
 export function HomeDemoCard({ demo }: HomeDemoCardProps) {
   return (
     <section className="message-card home-demo-card">
-      <p className="message-label">Можно увидеть дома</p>
+      <p className="message-label">это можно посмотреть дома</p>
       <h3>{demo.title}</h3>
       <p>
-        <strong>Что взять:</strong> {demo.materials.join(", ")}.
+        <strong>что взять:</strong> {demo.materials.join(", ")}.
       </p>
       <p>
-        <strong>Что показывает:</strong> {demo.shows}
+        <strong>что это показывает:</strong> {demo.shows}
       </p>
       <p>
-        <strong>Чего не показывает:</strong> {demo.limits}
+        <strong>чего это не покажет:</strong> {demo.limits}
       </p>
     </section>
   );

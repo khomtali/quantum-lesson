@@ -5,7 +5,7 @@ interface WarningNoteProps {
 export function WarningNote({ text }: WarningNoteProps) {
   return (
     <section className="message-card warning-card">
-      <p className="message-label">Не путать</p>
+      <p className="message-label">вот здесь люди обычно уезжают не туда</p>
       <p>{text}</p>
     </section>
   );

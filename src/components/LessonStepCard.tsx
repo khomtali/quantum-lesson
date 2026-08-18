@@ -33,7 +33,7 @@ export function LessonStepCard({
 
         {isFinalStep && takeaways?.length ? (
           <section className="message-card takeaway-card">
-            <p className="message-label">3 главных вывода</p>
+            <p className="message-label">с чем отсюда стоит выйти</p>
             <ul className="takeaway-list">
               {takeaways.map((item) => (
                 <li key={item}>{item}</li>

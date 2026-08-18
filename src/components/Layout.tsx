@@ -1,11 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
-  { to: "/", label: "Главная", end: true },
-  { to: "/lesson/1", label: "Урок 1" },
-  { to: "/lesson/2", label: "Урок 2" },
-  { to: "/glossary", label: "Словарь" },
-  { to: "/questions", label: "Вопросы" }
+  { to: "/", label: "главная", end: true },
+  { to: "/lesson/1", label: "урок 1" },
+  { to: "/lesson/2", label: "урок 2" },
+  { to: "/glossary", label: "словарь" },
+  { to: "/questions", label: "вопросы" }
 ];
 
 export function Layout() {
@@ -17,12 +17,12 @@ export function Layout() {
         <NavLink className="brand" to="/">
           <span className="brand-mark" />
           <span>
-            <strong>Квантовые уроки</strong>
-            <small>для совместного путешествия по странному микромиру</small>
+            <strong>квантовые уроки</strong>
+            <small>туда, где реальность перестаёт быть такой уж покладистой</small>
           </span>
         </NavLink>
 
-        <nav className="top-nav" aria-label="Основная навигация">
+        <nav className="top-nav" aria-label="основная навигация">
           {navItems.map((item) => (
             <NavLink
               key={item.to}

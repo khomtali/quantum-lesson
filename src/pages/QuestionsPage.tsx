@@ -7,8 +7,8 @@ export function QuestionsPage() {
     <div className="page-stack">
       <LessonHero
         eyebrow="вопросы по дороге"
-        title="то, что обычно хочется спросить сразу, не дожидаясь конца"
-        subtitle="короткие ответы на нормальные вопросы, которые возникают ровно в тот момент, когда мозг начинает слегка скрипеть."
+        title="то, что обычно хочется спросить сразу, пока лицо ещё не приняло сложную форму"
+        subtitle="короткие ответы на нормальные вопросы, которые вылезают ровно в тот момент, когда внутренняя уверенность уже поехала, а ясность ещё не приехала."
       />
 
       <section className="overview-grid">
@@ -18,7 +18,7 @@ export function QuestionsPage() {
             <p>{item.answer}</p>
             {item.lessonRoute ? (
               <Link className="text-link" to={item.lessonRoute}>
-                вернуться к нужному уроку
+                вернуться туда, где это разбирается
               </Link>
             ) : null}
           </article>

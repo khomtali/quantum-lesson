@@ -7,8 +7,8 @@ export function GlossaryPage() {
     <div className="page-stack">
       <LessonHero
         eyebrow="мини-словарь"
-        title="слова, без которых дальше всё начинает расплываться"
-        subtitle="короткие определения без академического бронежилета. просто чтобы быстро вернуть смысл на место."
+        title="слова, без которых дальше всё начинает ехать"
+        subtitle="короткие определения, когда мозг уже устал, а смысл терять всё-таки не хочется."
       />
 
       <section className="overview-grid glossary-grid">
@@ -18,7 +18,7 @@ export function GlossaryPage() {
             <p>{term.description}</p>
             {term.lessonRoute ? (
               <Link className="text-link" to={term.lessonRoute}>
-                где встречается в уроках
+                где это всплывает в уроках
               </Link>
             ) : null}
           </article>

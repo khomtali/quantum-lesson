@@ -37,7 +37,7 @@ export function HomePage() {
             <h3>{lesson.subtitle}</h3>
             <p>{lesson.description}</p>
             <Link className="text-link" to={lesson.href}>
-              открыть раздел
+              зайти сюда
             </Link>
           </article>
         ))}
