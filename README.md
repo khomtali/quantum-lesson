@@ -22,3 +22,11 @@ npm run dev
 npm run build
 npm run preview
 ```
+
+## github pages
+
+после push в `main` сайт деплоится через github actions.
+
+публичный адрес:
+
+`https://khomtali.github.io/quantum-lesson/`
