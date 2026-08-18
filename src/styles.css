@@ -428,6 +428,81 @@ h3 {
     linear-gradient(180deg, rgba(8, 16, 30, 0.8), rgba(5, 10, 18, 0.98));
 }
 
+.diagram-stack {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.diagram-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.diagram-expand-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(118, 225, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.diagram-expand-button:hover {
+  color: var(--text);
+  border-color: rgba(118, 225, 255, 0.44);
+  transform: translateY(-1px);
+}
+
+.diagram-close-button {
+  min-width: 108px;
+}
+
+.diagram-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(3, 8, 15, 0.82);
+  backdrop-filter: blur(16px);
+}
+
+.diagram-modal-card {
+  width: min(1180px, calc(100vw - 56px));
+  max-height: calc(100vh - 56px);
+  display: grid;
+  gap: 14px;
+}
+
+.diagram-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.diagram-expanded {
+  min-height: min(78vh, 900px);
+}
+
+.diagram-expanded .diagram-shell {
+  padding: 34px;
+  gap: 20px;
+}
+
+.diagram-expanded .diagram-header h3 {
+  font-size: 1.3rem;
+}
+
+.diagram-expanded .diagram-header p {
+  font-size: 1rem;
+}
+
 .diagram::before {
   content: "";
   position: absolute;
@@ -478,6 +553,12 @@ h3 {
   height: 100%;
   overflow: visible;
   min-width: 0;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.diagram-svg-ready {
+  opacity: 1;
 }
 
 .svg-panel {
@@ -1150,6 +1231,10 @@ h3 {
     min-height: 500px;
   }
 
+  .diagram-modal-card {
+    width: min(1080px, calc(100vw - 40px));
+  }
+
   .comparison-diagram,
   .everyday-diagram,
   .spectra-diagram,
@@ -1170,6 +1255,10 @@ h3 {
 
   .diagram-shell {
     padding: 22px;
+  }
+
+  .diagram-expanded .diagram-shell {
+    padding: 28px;
   }
 
   .diagram-header h3 {
@@ -1245,5 +1334,14 @@ h3 {
 
   .diagram {
     min-height: 420px;
+  }
+
+  .diagram-modal {
+    padding: 16px;
+  }
+
+  .diagram-modal-card {
+    width: min(100vw - 16px, 100%);
+    max-height: calc(100vh - 16px);
   }
 }

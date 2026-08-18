@@ -1,5 +1,15 @@
-import type { ReactNode } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from "react";
 import type { VisualType } from "../types";
+
+const DiagramModeContext = createContext(false);
 
 interface DiagramProps {
   type: VisualType;
@@ -11,28 +21,84 @@ interface DiagramShellProps {
   children: ReactNode;
 }
 
+interface DiagramSceneProps {
+  children: ReactNode;
+  width?: number;
+  height?: number;
+}
+
 export function Diagram({ type }: DiagramProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isOpen]);
+
   return (
-    <section className={`diagram diagram-${type}`} aria-hidden="true">
-      {type === "classical-world" ? <ClassicalWorldDiagram /> : null}
-      {type === "warning-signals" ? <WarningSignalsDiagram /> : null}
-      {type === "photoelectric" ? <PhotoelectricDiagram /> : null}
-      {type === "spectra" ? <SpectraDiagram /> : null}
-      {type === "double-slit" ? <DoubleSlitDiagram /> : null}
-      {type === "home-vs-lab" ? <HomeVsLabDiagram /> : null}
-      {type === "quantum-framework" ? <QuantumFrameworkDiagram /> : null}
-      {type === "core-ideas" ? <CoreIdeasDiagram /> : null}
-      {type === "everyday-quantum" ? <EverydayQuantumDiagram /> : null}
-      {type === "interpretation-boundary" ? <InterpretationBoundaryDiagram /> : null}
-      {type === "copenhagen" ? <CopenhagenDiagram /> : null}
-      {type === "many-worlds" ? <ManyWorldsDiagram /> : null}
-      {type === "bohmian" ? <BohmianDiagram /> : null}
-      {type === "modern-options" ? <ModernOptionsDiagram /> : null}
-      {type === "big-questions" ? <BigQuestionsDiagram /> : null}
-      {type === "buddhist-parallels" ? <BuddhistParallelsDiagram /> : null}
-      {type === "no-lies" ? <NoLiesDiagram /> : null}
-      {type === "lesson-two-finale" ? <LessonTwoFinaleDiagram /> : null}
-    </section>
+    <>
+      <div className="diagram-stack">
+        <section className={`diagram diagram-${type}`}>
+          <DiagramModeContext.Provider value={false}>
+            {renderDiagram(type)}
+          </DiagramModeContext.Provider>
+        </section>
+
+        <div className="diagram-toolbar">
+          <button
+            type="button"
+            className="diagram-expand-button"
+            onClick={() => setIsOpen(true)}
+          >
+            открыть схему крупно
+          </button>
+        </div>
+      </div>
+
+      {isOpen ? (
+        <div
+          className="diagram-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="увеличенная схема"
+          onClick={() => setIsOpen(false)}
+        >
+          <div className="diagram-modal-card" onClick={(event) => event.stopPropagation()}>
+            <div className="diagram-modal-actions">
+              <button
+                type="button"
+                className="diagram-expand-button diagram-close-button"
+                onClick={() => setIsOpen(false)}
+              >
+                закрыть
+              </button>
+            </div>
+
+            <section className={`diagram diagram-${type} diagram-expanded`}>
+              <DiagramModeContext.Provider value={true}>
+                {renderDiagram(type)}
+              </DiagramModeContext.Provider>
+            </section>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -49,13 +115,101 @@ function DiagramShell({ title, subtitle, children }: DiagramShellProps) {
   );
 }
 
+function DiagramScene({ children, width = 560, height = 360 }: DiagramSceneProps) {
+  const expanded = useContext(DiagramModeContext);
+  const contentRef = useRef<SVGGElement | null>(null);
+  const [transform, setTransform] = useState<string>("");
+
+  useLayoutEffect(() => {
+    const node = contentRef.current;
+
+    if (!node) {
+      return undefined;
+    }
+
+    let frameId = 0;
+    const updateTransform = () => {
+      const box = node.getBBox();
+
+      if (!box.width || !box.height) {
+        setTransform("");
+        return;
+      }
+
+      const paddingX = expanded ? 28 : 18;
+      const paddingY = expanded ? 24 : 18;
+      const scale = Math.min(
+        (width - paddingX * 2) / box.width,
+        (height - paddingY * 2) / box.height,
+        expanded ? 1.12 : 1
+      );
+      const tx = (width - box.width * scale) / 2 - box.x * scale;
+      const ty = (height - box.height * scale) / 2 - box.y * scale;
+
+      setTransform(`translate(${tx} ${ty}) scale(${scale})`);
+    };
+
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(updateTransform);
+    };
+
+    scheduleUpdate();
+
+    const observer = new ResizeObserver(scheduleUpdate);
+    const svg = node.ownerSVGElement;
+
+    if (svg) {
+      observer.observe(svg);
+    }
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [expanded, height, width]);
+
+  return (
+    <svg
+      className={`diagram-svg${transform ? " diagram-svg-ready" : ""}`}
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <g ref={contentRef} transform={transform || undefined}>
+        {children}
+      </g>
+    </svg>
+  );
+}
+
+function renderDiagram(type: VisualType) {
+  if (type === "classical-world") return <ClassicalWorldDiagram />;
+  if (type === "warning-signals") return <WarningSignalsDiagram />;
+  if (type === "photoelectric") return <PhotoelectricDiagram />;
+  if (type === "spectra") return <SpectraDiagram />;
+  if (type === "double-slit") return <DoubleSlitDiagram />;
+  if (type === "home-vs-lab") return <HomeVsLabDiagram />;
+  if (type === "quantum-framework") return <QuantumFrameworkDiagram />;
+  if (type === "core-ideas") return <CoreIdeasDiagram />;
+  if (type === "everyday-quantum") return <EverydayQuantumDiagram />;
+  if (type === "interpretation-boundary") return <InterpretationBoundaryDiagram />;
+  if (type === "copenhagen") return <CopenhagenDiagram />;
+  if (type === "many-worlds") return <ManyWorldsDiagram />;
+  if (type === "bohmian") return <BohmianDiagram />;
+  if (type === "modern-options") return <ModernOptionsDiagram />;
+  if (type === "big-questions") return <BigQuestionsDiagram />;
+  if (type === "buddhist-parallels") return <BuddhistParallelsDiagram />;
+  if (type === "no-lies") return <NoLiesDiagram />;
+  return <LessonTwoFinaleDiagram />;
+}
+
 function ClassicalWorldDiagram() {
   return (
     <DiagramShell
       title="классика работает на больших объектах"
       subtitle="траектория, причина и предсказание ещё живут в одном кадре."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="28" y="46" width="504" height="266" rx="24" className="svg-panel" />
         <line x1="84" y1="274" x2="486" y2="274" className="svg-axis" />
         <line x1="84" y1="274" x2="84" y2="88" className="svg-axis" />
@@ -81,7 +235,7 @@ function ClassicalWorldDiagram() {
         <text x="160" y="332" className="svg-note">
           для планет, маятников и машин эта логика держится отлично
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -92,7 +246,7 @@ function WarningSignalsDiagram() {
       title="проблемы пришли сразу с трёх сторон"
       subtitle="не одна странность, а серия опытов, где классика начала давать осечку."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="36" y="52" width="150" height="232" rx="20" className="svg-panel" />
         <rect x="205" y="52" width="150" height="232" rx="20" className="svg-panel" />
         <rect x="374" y="52" width="150" height="232" rx="20" className="svg-panel" />
@@ -157,7 +311,7 @@ function WarningSignalsDiagram() {
         <text x="126" y="324" className="svg-note">
           вместе это уже не шум, а системная поломка старой интуиции
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -168,7 +322,7 @@ function PhotoelectricDiagram() {
       title="фотоэффект: частота решает порог"
       subtitle="яркость увеличивает число фотонов, но не энергию одного фотона."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="36" y="72" width="220" height="212" rx="20" className="svg-panel" />
         <rect x="304" y="72" width="220" height="212" rx="20" className="svg-panel" />
 
@@ -205,7 +359,7 @@ function PhotoelectricDiagram() {
         <text x="100" y="324" className="svg-note">
           вывод: порог задаёт частота, а не просто “сделаем поярче”
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -216,7 +370,7 @@ function SpectraDiagram() {
       title="спектры: у атома разрешены только некоторые уровни"
       subtitle="если бы энергия менялась плавно, спектр не был бы нарезан линиями."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="42" y="60" width="206" height="224" rx="20" className="svg-panel" />
         <rect x="312" y="60" width="206" height="224" rx="20" className="svg-panel" />
 
@@ -246,7 +400,7 @@ function SpectraDiagram() {
         <text x="108" y="324" className="svg-note">
           вывод: атом меняет энергию не как угодно, а только по разрешённым шагам
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -257,7 +411,7 @@ function DoubleSlitDiagram() {
       title="две щели: измерение меняет картину"
       subtitle="без контроля пути видим интерференцию, с контролем пути — уже другой рисунок."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="36" y="74" width="220" height="208" rx="20" className="svg-panel" />
         <rect x="304" y="74" width="220" height="208" rx="20" className="svg-panel" />
 
@@ -300,7 +454,7 @@ function DoubleSlitDiagram() {
         <text x="92" y="324" className="svg-note">
           вывод: вопрос “через какую щель?” сам меняет физическую ситуацию
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -341,7 +495,7 @@ function QuantumFrameworkDiagram() {
       title="квантовая механика как рабочая схема"
       subtitle="не про “что там красиво происходит”, а про то, что можно посчитать и проверить."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="44" y="126" width="118" height="84" rx="18" className="svg-panel" />
         <rect x="220" y="126" width="118" height="84" rx="18" className="svg-panel" />
         <rect x="396" y="126" width="118" height="84" rx="18" className="svg-panel" />
@@ -368,7 +522,7 @@ function QuantumFrameworkDiagram() {
         <text x="116" y="306" className="svg-note">
           теория нужна затем, чтобы связать установку и статистику результатов
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -379,7 +533,7 @@ function CoreIdeasDiagram() {
       title="базовые идеи в одном кадре"
       subtitle="не орнамент, а опорные понятия, без которых дальше всё расплывётся."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <circle cx="280" cy="176" r="56" className="svg-core-node" />
         <text x="246" y="170" className="svg-core-label">
           состояние
@@ -425,7 +579,7 @@ function CoreIdeasDiagram() {
         <text x="372" y="276" className="svg-small">
           не всё задаётся вместе
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -436,7 +590,7 @@ function EverydayQuantumDiagram() {
       title="квантовый слой доезжает до повседневности"
       subtitle="от атома до ноутбука — цепочка длинная, но вполне земная."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="42" y="136" width="94" height="82" rx="18" className="svg-panel" />
         <rect x="170" y="136" width="94" height="82" rx="18" className="svg-panel" />
         <rect x="298" y="136" width="94" height="82" rx="18" className="svg-panel" />
@@ -469,7 +623,7 @@ function EverydayQuantumDiagram() {
         <text x="124" y="306" className="svg-note">
           квантмех важен не потому, что странный. а потому, что без него не собирается быт
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -480,7 +634,7 @@ function InterpretationBoundaryDiagram() {
       title="одна математика, несколько чтений"
       subtitle="данные общие. спор идёт о том, что считать реальностью за этими данными."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="58" y="126" width="126" height="84" rx="18" className="svg-panel" />
         <rect x="218" y="126" width="126" height="84" rx="18" className="svg-panel" />
         <rect x="378" y="86" width="118" height="54" rx="16" className="svg-panel" />
@@ -498,7 +652,7 @@ function InterpretationBoundaryDiagram() {
         <text x="130" y="320" className="svg-note">
           интерпретации спорят о смысле, а не о том, сработал ли эксперимент
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -509,7 +663,7 @@ function CopenhagenDiagram() {
       title="копенгаген: не дорисовывай лишнее"
       subtitle="теория нужна, чтобы считать результаты измерения, а не обязательно рисовать скрытый фильм между ними."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="62" y="88" width="174" height="186" rx="20" className="svg-panel" />
         <rect x="324" y="88" width="174" height="186" rx="20" className="svg-panel" />
         <text x="88" y="126" className="svg-label">что берём всерьёз</text>
@@ -523,7 +677,7 @@ function CopenhagenDiagram() {
         <text x="120" y="320" className="svg-note">
           выигрыш: дисциплина. цена: меньше онтологического комфорта
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -534,7 +688,7 @@ function ManyWorldsDiagram() {
       title="многомировая: коллапса нет, ветвление есть"
       subtitle="волновая функция развивается дальше, а возможные исходы расходятся по разным ветвям."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <path d="M104 182 H238" className="svg-arrow-line" />
         <path d="M238 182 C286 182, 314 154, 372 112" className="svg-arrow-line" />
         <path d="M238 182 C286 182, 314 182, 372 182" className="svg-arrow-line" />
@@ -552,7 +706,7 @@ function ManyWorldsDiagram() {
         <text x="116" y="320" className="svg-note">
           выигрыш: не нужен отдельный коллапс. цена: онтология становится очень широкой
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -563,7 +717,7 @@ function BohmianDiagram() {
       title="де бройль — бом: частица + направляющая волна"
       subtitle="траектория возвращается, но картинка мира перестаёт быть локально невинной."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <path d="M70 210 C140 164, 202 148, 272 180 C324 204, 382 202, 462 134" className="svg-path-hard" />
         <path d="M60 142 C150 102, 236 100, 332 132 C392 152, 438 150, 492 122" className="svg-path-soft" />
         <path d="M60 258 C146 218, 236 216, 332 248 C392 268, 440 266, 494 236" className="svg-path-soft" />
@@ -574,7 +728,7 @@ function BohmianDiagram() {
         <text x="118" y="320" className="svg-note">
           выигрыш: траектория есть. цена: локальность мира уже не выглядит простой
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -621,7 +775,7 @@ function BigQuestionsDiagram() {
       title="ключевые вопросы второго урока"
       subtitle="не потому что физики любят туман, а потому что простого ответа без цены не выходит."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <circle cx="280" cy="178" r="58" className="svg-core-node" />
         <text x="232" y="182" className="svg-core-label">
           измерение
@@ -634,7 +788,7 @@ function BigQuestionsDiagram() {
         <text x="114" y="320" className="svg-note">
           каждая интерпретация даёт свой пакет ответов на эти узлы
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -645,7 +799,7 @@ function BuddhistParallelsDiagram() {
       title="параллели — это рифмы, а не доказательства"
       subtitle="сравнивать можно пределы интуиции, роль отношений и вопрос независимой сущности."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="60" y="84" width="182" height="188" rx="20" className="svg-panel" />
         <rect x="318" y="84" width="182" height="188" rx="20" className="svg-panel" />
         <text x="126" y="118" className="svg-label">буддизм</text>
@@ -659,7 +813,7 @@ function BuddhistParallelsDiagram() {
         <text x="120" y="320" className="svg-note">
           сходство есть на уровне удара по наивной картине, не на уровне формул
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -670,7 +824,7 @@ function NoLiesDiagram() {
       title="красивую ложь лучше резать сразу"
       subtitle="иначе на месте физики быстро появляется сувенирный космос."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="54" y="86" width="452" height="194" rx="22" className="svg-panel" />
         <text x="88" y="126" className="svg-label">не надо говорить:</text>
         <text x="88" y="160" className="svg-small">“квантмех доказал буддизм”</text>
@@ -680,7 +834,7 @@ function NoLiesDiagram() {
         <text x="108" y="320" className="svg-note">
           если после объяснения осталась только магия, а физика исчезла, объяснение было плохим
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
@@ -691,7 +845,7 @@ function LessonTwoFinaleDiagram() {
       title="общий нерв второго урока"
       subtitle="и квантмех, и буддизм могут выбивать подпорки из наивной уверенности, но они не становятся одним и тем же."
     >
-      <svg className="diagram-svg" viewBox="0 0 560 360">
+      <DiagramScene>
         <rect x="74" y="122" width="144" height="92" rx="18" className="svg-panel" />
         <rect x="342" y="122" width="144" height="92" rx="18" className="svg-panel" />
         <circle cx="280" cy="168" r="44" className="svg-core-node" />
@@ -709,7 +863,7 @@ function LessonTwoFinaleDiagram() {
         <text x="116" y="320" className="svg-note">
           рифма есть. тождество — нет. и именно это делает разговор честным
         </text>
-      </svg>
+      </DiagramScene>
     </DiagramShell>
   );
 }
