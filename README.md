@@ -25,7 +25,7 @@ npm run preview
 
 ## github pages
 
-после push в `main` сайт деплоится через github actions.
+сайт опубликован через github pages.
 
 публичный адрес:
 
